@@ -1,16 +1,14 @@
-import 'package:creditsea_assignment/widets/account_screen_icons.dart';
-import 'package:creditsea_assignment/widets/bottom_sheet_create_account_screen.dart';
 import 'package:creditsea_assignment/widets/fonts.dart';
 import 'package:flutter/material.dart';
 
-class CreateAccount extends StatefulWidget {
-  const CreateAccount({super.key});
+class SignIn extends StatefulWidget {
+  const SignIn({super.key});
 
   @override
-  State<CreateAccount> createState() => _CreateAccountState();
+  State<SignIn> createState() => _CreateAccountState();
 }
 
-class _CreateAccountState extends State<CreateAccount> {
+class _CreateAccountState extends State<SignIn> {
   bool ischecked = true;
   @override
   Widget build(BuildContext context) {
@@ -29,30 +27,17 @@ class _CreateAccountState extends State<CreateAccount> {
             ),
             child: Center(child: Image.asset("assets/images/logo2.png")),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 22),
 
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              AccountScreenIcons(iconpath: "assets/images/caricon.png"),
-              const SizedBox(width: 24),
-              AccountScreenIcons(iconpath: "assets/images/bikeicon.png"),
-            ],
+          SizedBox(
+            width: 184,
+            height: 184,
+            child: Image.asset("assets/images/signin.png"),
           ),
-          const SizedBox(height: 24),
-
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              AccountScreenIcons(iconpath: "assets/images/laptopicon.png"),
-              const SizedBox(width: 24),
-              AccountScreenIcons(iconpath: "assets/images/phoneicon.png"),
-            ],
-          ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 22),
 
           fonts(
-            content: "Flexible Loan Options",
+            content: "24x7 Customer Care",
             fontFamily: "Montserrat",
             fontSize: 16,
             wordSpacing: 2,
@@ -62,7 +47,7 @@ class _CreateAccountState extends State<CreateAccount> {
           const SizedBox(height: 5),
 
           fonts(
-            content: "Loan types to cater to different financial needs",
+            content: "Dedicated customer support team",
             fontFamily: "Montserrat",
             fontSize: 12,
             wordSpacing: 2,
@@ -75,6 +60,22 @@ class _CreateAccountState extends State<CreateAccount> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Color.fromARGB(128, 255, 255, 255),
+                ),
+                width: 8,
+                height: 8,
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Color.fromARGB(128, 255, 255, 255),
+                ),
+                width: 8,
+                height: 8,
+              ),
+              Container(
                 width: 24,
                 height: 8,
                 decoration: BoxDecoration(
@@ -82,29 +83,13 @@ class _CreateAccountState extends State<CreateAccount> {
                   borderRadius: BorderRadius.circular(16),
                 ),
               ),
-              Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Color.fromARGB(128, 255, 255, 255),
-                ),
-                width: 8,
-                height: 8,
-              ),
-              Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Color.fromARGB(128, 255, 255, 255),
-                ),
-                width: 8,
-                height: 8,
-              ),
             ],
           ),
 
           const SizedBox(height: 16),
 
           /// This will take up all remaining space
-          Expanded(child: BottomSheetCreateAccountScreen()),
+          // Expanded(child: BottomSheetCreateAccountScreen()),
         ],
       ),
     );
