@@ -1,8 +1,11 @@
+import 'package:creditsea_assignment/widets/bottom_sheet_sign_in.dart';
 import 'package:creditsea_assignment/widets/fonts.dart';
+import 'package:creditsea_assignment/widets/password_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 
 class SignIn extends StatefulWidget {
-  const SignIn({super.key});
+  bool isSignin;
+  SignIn({super.key, required this.isSignin});
 
   @override
   State<SignIn> createState() => _CreateAccountState();
@@ -32,7 +35,7 @@ class _CreateAccountState extends State<SignIn> {
           SizedBox(
             width: 184,
             height: 184,
-            child: Image.asset("assets/images/signin.png"),
+            child: Image.asset("assets/images/si.png"),
           ),
           const SizedBox(height: 22),
 
@@ -89,7 +92,7 @@ class _CreateAccountState extends State<SignIn> {
           const SizedBox(height: 16),
 
           /// This will take up all remaining space
-          // Expanded(child: BottomSheetCreateAccountScreen()),
+          Expanded(child:widget.isSignin? BottomSheetSignIn():PasswordBottomSheet()),
         ],
       ),
     );

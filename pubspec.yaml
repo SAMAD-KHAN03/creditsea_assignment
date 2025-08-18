@@ -36,6 +36,9 @@ dependencies:
   cupertino_icons: ^1.0.8
   provider: ^6.1.5
   flutter_riverpod: ^2.6.1
+  firebase_phone_auth_handler: ^1.1.0+1
+  firebase_core: ^3.15.2
+  cloud_firestore: ^5.6.12
 
 dev_dependencies:
   flutter_test:
@@ -64,9 +67,13 @@ flutter:
     - assets/images/logo2.png
     - assets/images/bikeicon.png
     - assets/images/laptopicon.png
-    - assets/images/laptopicon.png
-    - assets/images/signin.png
+    - assets/images/phoneicon.png
     - assets/images/caricon.png
+    - assets/images/otp_screen_icon.png
+    - assets/images/si.png
+    - assets/images/emailverfication.png
+    - assets/images/pan.png
+    - assets/images/logo3.png
     # - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
@@ -83,8 +90,8 @@ flutter:
   fonts:
     - family: Montserrat
       fonts:
-        - asset: fonts/Montserrat/Montserrat-Italic-VariableFont_wght.ttf
-        - asset: fonts/Montserrat/ccc.ttf
+        - asset: assets/fonts/Montserrat/Montserrat-Italic-VariableFont_wght.ttf
+        - asset: assets/fonts/Montserrat/ccc.ttf
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro
