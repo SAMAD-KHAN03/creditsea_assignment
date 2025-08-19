@@ -1,5 +1,7 @@
 import 'package:creditsea_assignment/providers/screen_provider.dart';
+import 'package:creditsea_assignment/providers/steeper_selected_index.dart';
 import 'package:creditsea_assignment/screens/detail.dart';
+import 'package:creditsea_assignment/screens/offer_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -12,13 +14,14 @@ class Steeper extends ConsumerStatefulWidget {
 }
 
 class _Stepper extends ConsumerState<Steeper> {
-  List<bool> whichSelected = List<bool>.generate(
-    3,
-    (index) => index == 0 ? true : false,
-  );
+  // List<bool> whichSelected = List<bool>.generate(
+  //   3,
+  //   (index) => index == 0 ? true : false,
+  // );
 
   @override
   Widget build(BuildContext context) {
+    final index = ref.watch(steeperselectedIndex);
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -30,49 +33,22 @@ class _Stepper extends ConsumerState<Steeper> {
               padding: const EdgeInsets.all(16),
               child: Row(
                 children: [
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        whichSelected[1] = false;
-                        whichSelected[2] = false;
-                        whichSelected[0] = true;
-                      });
-                    },
-                    child: CustomStepper(
-                      serialnumber: "1",
-                      content: "Register",
-                      isselected: whichSelected[0],
-                    ),
+                  CustomStepper(
+                    serialnumber: "1",
+                    content: "Register",
+                    isselected: index == 0,
                   ),
                   const Spacer(),
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        whichSelected[0] = false;
-                        whichSelected[2] = false;
-                        whichSelected[1] = true;
-                      });
-                    },
-                    child: CustomStepper(
-                      serialnumber: "2",
-                      content: "Offer",
-                      isselected: whichSelected[1],
-                    ),
+                  CustomStepper(
+                    serialnumber: "2",
+                    content: "Offer",
+                    isselected: index == 1,
                   ),
                   const Spacer(),
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        whichSelected[0] = false;
-                        whichSelected[1] = false;
-                        whichSelected[2] = true;
-                      });
-                    },
-                    child: CustomStepper(
-                      serialnumber: "3",
-                      content: "Approval",
-                      isselected: whichSelected[2],
-                    ),
+                  CustomStepper(
+                    serialnumber: "3",
+                    content: "Approval",
+                    isselected: index == 2,
                   ),
                 ],
               ),
@@ -89,18 +65,8 @@ class _Stepper extends ConsumerState<Steeper> {
   // Method to return the current step widget
   Widget _buildCurrentStep(WidgetRef ref) {
     final screen = ref.watch(screenProvider);
-    if (whichSelected[0]) {
-      return screen;
-    } else if (whichSelected[1]) {
-      return const Center(
-        child: Text("Offer Screen"),
-      ); // Replace with your Offer widget
-    } else if (whichSelected[2]) {
-      return const Center(
-        child: Text("Approval Screen"),
-      ); // Replace with your Approval widget
-    }
-    return const Detail(); // Default
+    // final index = ref.watch(steeperselectedIndex);
+    return screen;
   }
 }
 

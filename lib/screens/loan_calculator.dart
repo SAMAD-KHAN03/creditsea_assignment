@@ -1,5 +1,9 @@
+
+import 'package:creditsea_assignment/providers/loan_details_provider.dart';
 import 'package:creditsea_assignment/providers/screen_provider.dart';
-import 'package:creditsea_assignment/screens/pan_verification.dart';
+import 'package:creditsea_assignment/providers/steeper_selected_index.dart';
+import 'package:creditsea_assignment/screens/offer_screen.dart';
+import 'package:creditsea_assignment/screens/steeper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -13,9 +17,9 @@ class LoanCalculator extends ConsumerStatefulWidget {
 const blackColor = Color.fromARGB(255, 58, 58, 58);
 
 class _LoadCalculator extends ConsumerState<LoanCalculator> {
-  String? selectedPurpose;
-  double principalAmount = 30000;
-  double tenure = 40; // in days
+  // String? selectedPurpose;
+  // double principalAmount = 30000;
+  // double tenure = 40; // in days
 
   final List<String> loanPurposes = [
     'Personal Use',
@@ -29,12 +33,19 @@ class _LoadCalculator extends ConsumerState<LoanCalculator> {
     'Other',
   ];
 
-  // Calculate interest and total payable
-  double get interestAmount => principalAmount * 0.01; // 1% interest
-  double get totalPayable => principalAmount + interestAmount;
+  // // Calculate interest and total payable
+  // double interestAmount = principalAmount * 0.01; // 1% interest
+  // double totalPayable = principalAmount + interestAmount;
 
   @override
   Widget build(BuildContext context) {
+    String? selectedPurpose = ref.watch(selectedPurposeProvider);
+    double principalAmount = ref.watch(principalAmountProvider);
+    double tenure = ref.watch(tenureProvider);
+    double interest = ref.watch(interestProvider);
+    double interestAmount = principalAmount * interest;
+    double totalPayable = principalAmount + interestAmount;
+
     return Scaffold(
       backgroundColor: Colors.grey[50],
 
@@ -109,8 +120,8 @@ class _LoadCalculator extends ConsumerState<LoanCalculator> {
                           width: 1,
                         ),
                       ),
-                      child: const Text(
-                        'Interest Per Day 1%',
+                      child: Text(
+                        'Interest Per Day ${(interest / tenure).toDouble().toStringAsFixed(3)}%',
                         style: TextStyle(fontSize: 14, color: blackColor),
                         textAlign: TextAlign.center,
                       ),
@@ -193,9 +204,7 @@ class _LoadCalculator extends ConsumerState<LoanCalculator> {
                   );
                 }).toList(),
                 onChanged: (value) {
-                  setState(() {
-                    selectedPurpose = value;
-                  });
+                  ref.watch(selectedPurposeProvider.notifier).state = value;
                 },
               ),
 
@@ -251,9 +260,14 @@ class _LoadCalculator extends ConsumerState<LoanCalculator> {
                   max: 100000,
                   divisions: 18,
                   onChanged: (value) {
-                    setState(() {
-                      principalAmount = value;
-                    });
+                    ref.watch(principalAmountProvider.notifier).state = value;
+
+                    double tenure = ref.read(tenureProvider);
+                    double? mappedInterest = interestTable[value]?[tenure];
+                    if (mappedInterest != null) {
+                      ref.watch(interestProvider.notifier).state =
+                          mappedInterest;
+                    }
                   },
                 ),
               ),
@@ -310,9 +324,16 @@ class _LoadCalculator extends ConsumerState<LoanCalculator> {
                   max: 45,
                   divisions: 5,
                   onChanged: (value) {
-                    setState(() {
-                      tenure = value;
-                    });
+                    ref.watch(tenureProvider.notifier).state = value;
+
+                    double principal = ref.read(principalAmountProvider);
+                    double tenure = value;
+
+                    double? mappedInterest = interestTable[principal]?[tenure];
+                    if (mappedInterest != null) {
+                      ref.watch(interestProvider.notifier).state =
+                          mappedInterest;
+                    }
                   },
                 ),
               ),
@@ -370,7 +391,7 @@ class _LoadCalculator extends ConsumerState<LoanCalculator> {
 
                     const SizedBox(height: 12),
 
-                    const Row(
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
@@ -378,7 +399,7 @@ class _LoadCalculator extends ConsumerState<LoanCalculator> {
                           style: TextStyle(fontSize: 16, color: blackColor),
                         ),
                         Text(
-                          '1%',
+                          interest.toStringAsFixed(3),
                           style: TextStyle(
                             fontSize: 16,
                             color: Color.fromARGB(255, 0, 117, 255),
@@ -494,6 +515,12 @@ class _LoadCalculator extends ConsumerState<LoanCalculator> {
   }
 
   void _showConfirmationDialog() {
+    String? selectedPurpose = ref.watch(selectedPurposeProvider);
+    double principalAmount = ref.watch(principalAmountProvider);
+    double tenure = ref.watch(tenureProvider);
+    double interest = ref.watch(interestProvider);
+    double interestAmount = principalAmount * interest;
+    double totalPayable = principalAmount + interestAmount;
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -503,7 +530,7 @@ class _LoadCalculator extends ConsumerState<LoanCalculator> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Purpose: $selectedPurpose'),
+              Text('Purpose: ${selectedPurpose}'),
               Text('Principal Amount: ₹${principalAmount.toInt()}'),
               Text('Tenure: ${tenure.toInt()} days'),
               Text('Total Payable: ₹${totalPayable.toInt()}'),
@@ -518,14 +545,25 @@ class _LoadCalculator extends ConsumerState<LoanCalculator> {
             ),
             ElevatedButton(
               onPressed: () {
-                Navigator.of(context).pop();
-                ScaffoldMessenger.of(context).showSnackBar(
+                // Close the dialog first
+                
+ Navigator.of(context).pop();
+                // Update provider
+                ref.watch(steeperselectedIndex.notifier).state = 1;
+                ref.watch(screenProvider.notifier).state = OfferScreen();
+               
+                // Then push your new screen
+                Navigator.of(
+                  this.context, // use parent widget context instead of dialog context
+                ).push(MaterialPageRoute(builder: (context) => Steeper()));
+
+                // Show snackbar
+                ScaffoldMessenger.of(this.context).showSnackBar(
                   const SnackBar(
                     content: Text('Loan application submitted successfully!'),
                     backgroundColor: Colors.green,
                   ),
                 );
-                Navigator.pop(context);
               },
               child: const Text('Confirm'),
             ),

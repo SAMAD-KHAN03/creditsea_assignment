@@ -1,10 +1,12 @@
-// ignore_for_file: no_leading_underscores_for_local_identifiers
+// ignore_for_file: no_leading_underscores_for_local_identifiers, unused_element
 import 'package:creditsea_assignment/providers/profile_components_provider.dart';
 import 'package:creditsea_assignment/providers/screen_provider.dart';
 import 'package:creditsea_assignment/providers/text_editing_controllers_providers.dart';
 import 'package:creditsea_assignment/screens/detail.dart';
 import 'package:creditsea_assignment/screens/pan_verification.dart';
+import 'package:email_auth/email_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:creditsea_assignment/backend/email_otp.dart';
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -17,6 +19,35 @@ class Emailverification extends ConsumerStatefulWidget {
 }
 
 class _EmailVerification extends ConsumerState<Emailverification> {
+  bool otpSent = false;
+
+  Future<void> _handleSendOtp(String email) async {
+    if (email.isEmpty) return;
+    final success = await EmailOtpService.sendOtp(email);
+    if (success) {
+      setState(() => otpSent = true);
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("OTP sent successfully!")));
+    } else {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Failed to send OTP ❌")));
+    }
+  }
+
+  void _handleVerifyOtp(String otp) {
+    if (EmailOtpService.verifyOtp(otp)) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("OTP Verified ✅")));
+    } else {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Invalid OTP ❌")));
+    }
+  }
+
   final List<FocusNode> _otpFocusNodes = List.generate(
     6,
     (index) => FocusNode(),
@@ -148,9 +179,14 @@ class _EmailVerification extends ConsumerState<Emailverification> {
                 ),
               ),
             ),
-
+            // TextButton(onPressed: () {}, child: Text(data)),
             const SizedBox(height: 32),
-
+            TextButton(
+              onPressed: () async {
+                await _handleSendOtp(_emailController.text);
+              },
+              child: const Text("Send OTP"),
+            ),
             // OTP Verification Label
             Text(
               'OTP Verification',
@@ -246,18 +282,15 @@ class _EmailVerification extends ConsumerState<Emailverification> {
               width: double.infinity,
               height: 52,
               child: ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   // Handle verification
                   String otp = _otpControllers
                       .map((controller) => controller.text)
                       .join();
                   if (_emailController.text.isNotEmpty && otp.length == 6) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Email verified successfully!'),
-                      ),
-                    );
-                    // Navigator.pop(context);
+                    _handleVerifyOtp(otp);
+                    ref.watch(screenProvider.notifier).state =
+                        PanVerification();
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(

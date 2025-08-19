@@ -20,12 +20,18 @@ class _Detail extends ConsumerState<Detail> {
   final List<String> maritalStatuses = ["Single", "Married", "Other"];
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ) {
     final _firstNameController = ref.watch(firstnameController);
     final _lastNameController = ref.watch(lastnameController);
-    String? _gender = ref.watch(genderController);
-    DateTime? _dob = ref.watch(dobController);
-    String? _maritalStatus = ref.watch(maritalStatus);
+
+    final _gender = ref.watch(genderController);
+    final _dob = ref.watch(dobController);
+    final _maritalStatus = ref.watch(maritalStatus);
+
+    // Example data (replace with your lists)
+    final genders = ["Male", "Female", "Other"];
+    final maritalStatuses = ["Single", "Married", "Divorced"];
+
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -73,7 +79,9 @@ class _Detail extends ConsumerState<Detail> {
             items: genders
                 .map((e) => DropdownMenuItem(value: e, child: Text(e)))
                 .toList(),
-            onChanged: (val) => setState(() => _gender = val),
+            onChanged: (val) {
+              ref.read(genderController.notifier).state = val;
+            },
           ),
           const SizedBox(height: 16),
 
@@ -93,7 +101,7 @@ class _Detail extends ConsumerState<Detail> {
                     lastDate: DateTime.now(),
                   );
                   if (picked != null) {
-                    setState(() => _dob = picked);
+                    ref.read(dobController.notifier).state = picked;
                   }
                 },
               ),
@@ -101,7 +109,7 @@ class _Detail extends ConsumerState<Detail> {
             controller: TextEditingController(
               text: _dob == null
                   ? ""
-                  : "${_dob!.day}-${_dob!.month}-${_dob!.year}",
+                  : "${_dob.day}-${_dob.month}-${_dob.year}",
             ),
           ),
           const SizedBox(height: 16),
@@ -116,7 +124,9 @@ class _Detail extends ConsumerState<Detail> {
             items: maritalStatuses
                 .map((e) => DropdownMenuItem(value: e, child: Text(e)))
                 .toList(),
-            onChanged: (val) => setState(() => _maritalStatus = val),
+            onChanged: (val) {
+              ref.read(maritalStatus.notifier).state = val;
+            },
           ),
 
           const Spacer(),
@@ -126,11 +136,12 @@ class _Detail extends ConsumerState<Detail> {
             width: double.infinity,
             child: ElevatedButton(
               onPressed: () {
-                // validation and navigation
-                ref.watch(screenProvider.notifier).state = Emailverification();
+                // Example: navigation
+                ref.read(screenProvider.notifier).state =
+                    const Emailverification();
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Color.fromARGB(255, 0, 117, 255),
+                backgroundColor: const Color.fromARGB(255, 0, 117, 255),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),

@@ -1,4 +1,9 @@
+// ignore_for_file: use_super_parameters
+
 import 'package:creditsea_assignment/firebase_options.dart';
+import 'package:creditsea_assignment/screens/applicatio_screen.dart';
+import 'package:creditsea_assignment/screens/application_status_panel.dart';
+import 'package:creditsea_assignment/screens/emailverification.dart';
 import 'package:creditsea_assignment/screens/first_screen.dart';
 import 'package:creditsea_assignment/screens/loan_calculator.dart';
 import 'package:creditsea_assignment/screens/otp_screen.dart';
@@ -9,7 +14,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await Firebase.initializeApp();
   runApp(
     FirebasePhoneAuthProvider(
       child: ProviderScope(

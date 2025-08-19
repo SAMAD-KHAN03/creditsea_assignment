@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:creditsea_assignment/screens/create_account.dart';
 import 'package:flutter/material.dart';
+import 'package:creditsea_assignment/backend/firebase_functions.dart';
 
 class FirstScreen extends StatefulWidget {
   const FirstScreen({super.key});
@@ -9,8 +11,10 @@ class FirstScreen extends StatefulWidget {
 }
 
 class _FirstScreenState extends State<FirstScreen> {
+  
+
   @override
-  void initState() {
+  void initState()  {
     // TODO: implement initState
     super.initState();
     Future.delayed(Duration(seconds: 2), () {

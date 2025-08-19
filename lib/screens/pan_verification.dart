@@ -1,8 +1,10 @@
+import 'package:creditsea_assignment/providers/profile_components_provider.dart';
 import 'package:creditsea_assignment/providers/screen_provider.dart';
 import 'package:creditsea_assignment/screens/emailverification.dart';
 import 'package:creditsea_assignment/screens/loan_calculator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:creditsea_assignment/backend/firebase_functions.dart';
 
 class PanVerification extends ConsumerStatefulWidget {
   @override
@@ -10,20 +12,11 @@ class PanVerification extends ConsumerStatefulWidget {
 }
 
 class _PanVerification extends ConsumerState<PanVerification> {
-  final TextEditingController _panController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-
-  @override
-  void dispose() {
-    _panController.dispose();
-    super.dispose();
-  }
 
   void _onVerifyPressed(BuildContext context) {
     if (_formKey.currentState!.validate()) {
       // Handle verification logic here
-      String panNumber = _panController.text.trim();
-      print('PAN Number to verify: $panNumber');
       // You can add your verification API call here
       Navigator.of(
         context,
@@ -52,6 +45,7 @@ class _PanVerification extends ConsumerState<PanVerification> {
 
   @override
   Widget build(BuildContext context) {
+    final _panController = ref.watch(pandCardNumber);
     return Scaffold(
       resizeToAvoidBottomInset: true,
       backgroundColor: Colors.white,
@@ -78,7 +72,6 @@ class _PanVerification extends ConsumerState<PanVerification> {
         child: Form(
           key: _formKey,
           child: ListView(
-            
             // 👇 Makes sure it scrolls only when needed
             shrinkWrap: true,
             children: [
@@ -159,8 +152,10 @@ class _PanVerification extends ConsumerState<PanVerification> {
                 width: double.infinity,
                 height: 56,
                 child: ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     _onVerifyPressed(context);
+                    print("calling the function");
+                    await saveUserDetailsToFirestore(ref);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color.fromARGB(255, 0, 117, 255),
